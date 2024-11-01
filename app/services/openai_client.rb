@@ -21,13 +21,19 @@ class OpenaiClient
 
     response = @client.chat(
       parameters: {
-        model: "gpt-4-turbo",
-        prompt: prompt,
-        max_tokens: 300
+        model: "gpt-4",
+        messages: [
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        max_tokens: 300,
+        temperature: 0.7
       }
     )
 
-    response["choices"].first["text"]
+    response.dig("choices", 0, "message", "content")
   end
 
   private
