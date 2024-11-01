@@ -15,4 +15,8 @@ class TreinoBotController extends ValueNotifier<TreinoBotState> {
       value = TreinoBotErrorState(error: '$error');
     }
   }
+
+  Future<void> retry() async {
+    value = TreinoBotInitialState();
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:treino_bot_flutter/treino_bot_controller.dart';
 import 'package:treino_bot_flutter/treino_bot_state.dart';
 
@@ -14,6 +15,10 @@ class _FirstPageState extends State<FirstPage> {
 
   void loadTraining() {
     controller.generateTraining();
+  }
+
+  void retry() {
+    controller.retry();
   }
 
   @override
@@ -33,9 +38,11 @@ class _FirstPageState extends State<FirstPage> {
               TreinoBotLoadingState() => const _LoadingWidget(),
               TreinoBotErrorState(:final error) => _ErrorWidget(
                   errorText: error,
+                  retry: retry,
                 ),
               TreinoBotSuccessState(:final result) => _SuccessWidget(
                   result: result,
+                  retry: retry,
                 ),
             };
           },
@@ -77,17 +84,33 @@ class _LoadingWidget extends StatelessWidget {
 class _ErrorWidget extends StatelessWidget {
   const _ErrorWidget({
     required this.errorText,
+    required this.retry,
   });
 
   final String errorText;
+  final Function() retry;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        errorText,
-        style: const TextStyle(fontSize: 16),
-      ),
+    return Column(
+      children: [
+        Expanded(
+          child: Center(
+            child: Text(
+              errorText,
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: retry,
+            child: const Text('Voltar'),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -95,12 +118,27 @@ class _ErrorWidget extends StatelessWidget {
 class _SuccessWidget extends StatelessWidget {
   const _SuccessWidget({
     required this.result,
+    required this.retry,
   });
 
   final String result;
+  final Function() retry;
 
   @override
   Widget build(BuildContext context) {
-    return Text(result);
+    return Column(
+      children: [
+        Expanded(
+          child: Markdown(data: result),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: retry,
+            child: const Text('Voltar'),
+          ),
+        )
+      ],
+    );
   }
 }
