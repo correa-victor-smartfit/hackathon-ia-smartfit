@@ -21,7 +21,7 @@ class TrainingsController < ApplicationController
     if request.format.html?
       render plain: treino
     else
-      render json: { treino: treino }
+      render plain: treino
     end
   end
 end
